@@ -1,0 +1,27 @@
+[project]
+name = "meilbackend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "arize-phoenix-otel>=0.12.1",
+    "dotenv>=0.9.9",
+    "fastapi>=0.115.12",
+    "langchain>=0.3.25",
+    "langchain-mcp-adapters>=0.1.7",
+    "langchain-openai>=0.3.23",
+    "langchain-tavily>=0.2.2",
+    "langfuse>=3.2.4",
+    "langgraph>=0.4.8",
+    "langgraph-checkpoint-mongodb>=0.1.4",
+    "openinference-instrumentation-langchain>=0.1.46",
+    "pydantic[email]>=2.11.7",
+    "pyjwt>=2.10.1",
+    "pymongo>=4.12.1",
+    "pytest>=8.4.1",
+    "uvicorn>=0.34.3",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
