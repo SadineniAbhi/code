@@ -1,0 +1,5 @@
+# Require approval for commands that are not on Codex's trusted command list.
+approval_policy = "untrusted"
+
+# Keep approved commands confined to the workspace unless separately escalated.
+sandbox_mode = "workspace-write"
