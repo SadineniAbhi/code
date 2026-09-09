@@ -1,0 +1,10 @@
+# Local credentials and environment overrides
+.env
+**/.env
+
+# Local dependency/build artifacts
+**/.venv/
+**/node_modules/
+**/__pycache__/
+**/build/
+**/dist/

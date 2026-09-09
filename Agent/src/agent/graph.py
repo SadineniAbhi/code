@@ -10,8 +10,10 @@ def build_workflow(tools: list[Any], llm_with_tools: Any) -> StateGraph:
     workflow.add_node("chat", chat_node)
     workflow.add_node("tools", ToolNode(tools))
     workflow.add_edge(START, "chat")
-    workflow.add_conditional_edges("chat", route_chat_node)
+    workflow.add_conditional_edges(
+        "chat",
+        route_chat_node,
+        {"tools": "tools", END: END},
+    )
     workflow.add_edge("tools", "chat")
-    workflow.add_edge("chat", END)
     return workflow
-

@@ -1,0 +1,47 @@
+services:
+  kubernetes-mcp:
+    build:
+      context: ./kubernetesmcp
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /secrets/gcp-sa.json
+      GOOGLE_CLOUD_PROJECT: ${GCP_PROJECT_ID:-project-2026-486210}
+      ARTIFACT_REGISTRY_REPO: ${ARTIFACT_REGISTRY_REPO:-coding-agent-project}
+      ARTIFACT_REGISTRY_REGION: ${ARTIFACT_REGISTRY_REGION:-us-central1}
+      KUBECONFIG: /kube/config
+    volumes:
+      - ${GCP_SA_KEY_PATH:-/home/abhi/.config/gcp-sa/devops-agent-sa.json}:/secrets/gcp-sa.json:ro
+      - ${KUBE_CONFIG_DIR:-/home/abhi/.kube}:/kube:ro
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('localhost',5000),2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+  agent:
+    build:
+      context: ./Agent
+    env_file:
+      - ./Agent/.env
+    environment:
+      MCP_SERVERS_JSON: '{"kubernetes":{"url":"http://kubernetes-mcp:5000/mcp","transport":"streamable_http"}}'
+    depends_on:
+      kubernetes-mcp:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  chat-ui:
+    build:
+      context: ./ChatUI
+      args:
+        REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL:-http://localhost:8000}
+    depends_on:
+      - agent
+    ports:
+      - "3000:80"
+    restart: unless-stopped
